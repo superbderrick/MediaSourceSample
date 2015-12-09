@@ -8,6 +8,7 @@ var path = require('path');
 app.set("view engine" , 'ejs');
 app.use(express.static(path.join(__dirname , 'public')));
 
+// later It have to separlate roughing module.
 app.get('/' , function (req , res) {
 	res.render('index');
 });
@@ -17,9 +18,6 @@ app.get('/shaka' , function (req , res) {
 });
 
 
-// app.get('/shaka' , function (req , res) {
-// 	res.render('shaka');
-// });
 
 
 app.listen(8080,function(){
