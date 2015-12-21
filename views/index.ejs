@@ -8,6 +8,8 @@
     <meta name="author" content="Derrick">
     <link rel="icon" href="../../favicon.ico">
 
+    <script src="js/app.js"></script>
+
     <title>Choice Your Player mode</title>
 
     <!-- Bootstrap core CSS -->
@@ -19,6 +21,33 @@
   </head>
 
   <body>
+
+  <table>
+       <tr class="dash">
+        <td colspan="2">
+          <select id="mpdList" onchange="app.onMpdChange()">
+            <option value="assets/angel_one.mpd">"Angel One" (TNG clip) - multilingual, subtitles, VP8</option>
+            <option value="assets/car-20120827-manifest.mpd">"Car" (YT DASH test) - MP4</option>
+            <option value="assets/car_cenc-20120827-manifest.mpd">"Car/CENC" (YT DASH EME test) - MP4, ClearKey</option>
+            <option value="assets/feelings_vp9-20130806-manifest.mpd">"Feelings" (YT DASH test) - VP9</option>
+            <option value="assets/feelings_audio_only-20130806-manifest.mpd">"Feelings" (YT DASH test) - Audio only</option>
+            <option value="assets/car_segmenttemplate.mpd">"Car/SegmentTemplate" (Chromecast test) - MP4 (no SIDX, video only), Widevine</option>
+            <option value="//download.tsi.telecom-paristech.fr/gpac/DASH_CONFORMANCE/TelecomParisTech/mp4-main-multi/mp4-main-multi-mpd-AV-NBS.mpd">"GPAC/SegmentList" (conformance test)</option>
+            <option value="assets/oops_cenc-20121114-signedlicenseurl-manifest.mpd">"Oops" (modified YT DASH EME test) - MP4, multi-DRM</option>
+            <option value="assets/oops_cenc_pssh.mpd">"Oops" (modified YT DASH EME test) - MP4, Widevine, PSSH in MPD</option>
+            <option value="//storage.googleapis.com/widevine-demo-media/sintel-1080p/dash.mpd">"Sintel" (1080p high bitrate test) - MP4</option>
+            <option value="//storage.googleapis.com/widevine-demo-media/sintel-multicodec-4k/dash.mpd">"Sintel" (4k) - MP4, VP8, VP9</option>
+            <option value="assets/live.mpd">"NormalLive</option>
+          </select>
+        </td>
+      </tr>
+      
+      <tr>
+        <td colspan="3">
+          <button id="loadButton" onclick="app.loadStream();">Load stream</button>
+        </td>
+      </tr>
+    </table>
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
@@ -41,6 +70,13 @@
         </div>
       </div>
     </nav>
+
+      <video id="video"
+           width="640" height="480"
+           crossorigin="anonymous"
+           controls>
+      Your browser does not support HTML5 video.
+    </video>
 
 
 
