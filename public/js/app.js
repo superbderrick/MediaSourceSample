@@ -4,53 +4,73 @@ app.init = null;
 app.loadstream = null ;
 app.typeA = null;
 
+var assetURL = 'assets/frag_bunny.mp4';
+var mediaSource = null;
+var mimeCodec = null;
+var video = null;
+
+app.loadStream = function()
+{
+	this.init();
+};
+
+app.init = function ()
+{
+	app.typeB();
+};
+
 app.typeA = function ()
 {
-	 var video = document.querySelector('video');
-      var assetURL = 'assets/frag_bunny.mp4';
-      // Need to be specific for Blink regarding codecs
-      // ./mp4info frag_bunny.mp4 | grep Codec
-      var mimeCodec = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
+	 video = document.querySelector('video');
+     mimeCodec = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
 
-      if ('MediaSource' in window && MediaSource.isTypeSupported(mimeCodec)) {
-        var mediaSource = new MediaSource;
-        video.src = URL.createObjectURL(mediaSource);
-        mediaSource.addEventListener('sourceopen', sourceOpen);
-      } else {
-        console.error('Unsupported MIME type or codec: ', mimeCodec);
-      }
+     app.issupport();
+}
 
-      function sourceOpen (_) {
-        var mediaSource = this;
-        var sourceBuffer = mediaSource.addSourceBuffer(mimeCodec);
-        fetchAB(assetURL, function (buf) {
+app.sourceopen = function () {
+	   var mediaSource = this;
+       var sourceBuffer = mediaSource.addSourceBuffer(mimeCodec);
+       console.log(assetURL);
+
+        app.fetchAB(assetURL, function (buf) {
+
           sourceBuffer.addEventListener('updateend', function (_) {
             mediaSource.endOfStream();
             video.play();
-            //console.log(mediaSource.readyState); // ended
           });
           sourceBuffer.appendBuffer(buf);
         });
-      };
+}
 
-      function fetchAB (url, cb) {
-        console.log(url);
+app.fetchAB = function(url , cb) {
+		console.log('fetchAB');
         var xhr = new XMLHttpRequest;
         xhr.open('get', url);
         xhr.responseType = 'arraybuffer';
         xhr.onload = function () {
+        	console.log(cb);
+        	console.log(xhr.response);
           cb(xhr.response);
         };
         xhr.send();
-      };
-
-
 }
+
+app.issupport = function ()
+{
+	 if ('MediaSource' in window && MediaSource.isTypeSupported(mimeCodec)) {
+        mediaSource = new MediaSource;
+
+        video.src = URL.createObjectURL(mediaSource);
+        mediaSource.addEventListener('sourceopen', app.sourceopen);
+      } else {
+        console.error('Unsupported MIME type or codec: ', mimeCodec);
+      }
+}
+
 
 app.typeB = function ()
 {
 	 var video = document.querySelector('video');
-      var assetURL = 'assets/frag_bunny.mp4';
       
       var mimeCodec = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
       var totalSegments = 5;
@@ -67,9 +87,12 @@ app.typeB = function ()
       } else {
         console.error('Unsupported MIME type or codec: ', mimeCodec);
       }
+
+
       var sourceBuffer = null;
       function sourceOpen (_) {
         sourceBuffer = mediaSource.addSourceBuffer(mimeCodec);
+
         getFileLength(assetURL, function (fileLength) {
           console.log((fileLength / 1024 / 1024).toFixed(2), 'MB');
           segmentLength = Math.round(fileLength / totalSegments);
@@ -88,9 +111,11 @@ app.typeB = function ()
         xhr.open('head', url);
         xhr.onload = function () {
             cb(xhr.getResponseHeader('content-length'));
+            console.log(xhr.getResponseHeader('content-length'));
           };
         xhr.send();
       };
+
       function fetchRange (url, start, end, cb) {
         var xhr = new XMLHttpRequest;
         xhr.open('get', url);
@@ -141,15 +166,5 @@ app.typeB = function ()
       };
 }
 
-
-app.loadStream = function()
-{
-	this.init();
-};
-
-app.init = function ()
-{
-	app.typeB();
-};
 
 
