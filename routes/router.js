@@ -18,5 +18,10 @@ route.get('/setting' , function (req , res) {
 	res.render('setting');
 });
 
+route.get('/ms' , function (req , res) {
+	res.render('ms');
+});
+
+
 
 module.exports = route;

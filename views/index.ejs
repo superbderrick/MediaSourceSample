@@ -33,7 +33,6 @@
         </td>
       </tr>
       
-      
       <tr>
         <td colspan="3">
           <button id="loadButton" onclick="app.loadStream();">Load stream</button>
@@ -44,7 +43,13 @@
           <button id="praticeButton" onclick="pratice.showSampleCodeTwo();">Pratice</button>
         </td>
       </tr>
+      <tr>
+        <td colspan="2">
+          <button id="parseButton" onclick="app.parsempd();">ParseTest</button>
+        </td>
+      </tr>
     </table>
+
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
@@ -62,6 +67,7 @@
             <li class="active"><a href="/">DerrickPlayer</a></li>
             <li><a href="/shaka">ShakaPlayer</a></li>
             <li><a href="/video">VideoJs</a></li>
+            <li><a href="/ms">MS</a></li>
             <li><a href="/setting">Setting</a></li>
           </ul>
         </div>
@@ -74,6 +80,18 @@
            controls>
       Your browser does not support HTML5 video.
     </video>
+    
+      <div id="mydiv">
+      <span id="myspan"><br />This demo requires Internet Explorer 11</span>
+    </div>
+    <div id="videoInfo"></div>
+    <div>&nbsp;</div>
+    <div id="curInfo"> 
+     <ul>
+        <li>Index: <span id="curIndex"></span> of <span id="numIndexes"></span></li>
+        <li>Segment length: <span id="segLength"></span></li>
+        <li>Video time: <span id="curTime"></span></li>
+      </ul>
 
 
 
