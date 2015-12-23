@@ -81,7 +81,8 @@ mangoFruit.showName(); //
 mangoFruit.nativeTo();
 // This is a Generic Fruit
 // Grown in:USA
-	
+	var test = 0.5;
+    console.log((2.2 | 0)  );
 
 }
 
