@@ -17,6 +17,7 @@
     <link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="stylesheets/starter-template.css" rel="stylesheet">
+    <link href="stylesheets/basic.css" rel="stylesheet">
   </head>
 
   <body>
@@ -24,30 +25,18 @@
   <table>
        <tr class="dash">
         <td colspan="2">
-          <select id="mpdList" onchange="app.onMpdChange()">
-            <option value="assets/angel_one.mpd">"Simple play local</option>
-            <option value="assets/angel_one.mpd">"Simple play local with buffer</option>
-            <option value="assets/angel_one.mpd">"Normal MPD not encoded content </option>
-            <option value="assets/angel_one.mpd">"encoded content </option>
+          <select class="contentsList"  onchange="app.onMpdChange()">
+            <option value="assets/frag_bunny.mp4"> local play segmentfile </option>
+            <option value="assets/angel_one.mpd"> dash play segmentlist</option>
+            <option value="assets/angel_one.mpd"> dash play segmenttemplete </option>
+            <option value="assets/angel_one.mpd"> dash play segmenttemplete with eme  </option>
           </select>
-        </td>
-      </tr>
-      
-      <tr>
-        <td colspan="3">
+
           <button id="loadButton" onclick="app.loadStream();">Load stream</button>
         </td>
       </tr>
-      <tr>
-        <td colspan="2">
-          <button id="praticeButton" onclick="pratice.showSampleCodeTwo();">Pratice</button>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2">
-          <button id="parseButton" onclick="app.parsempd();">ParseTest</button>
-        </td>
-      </tr>
+      
+     
     </table>
 
 
@@ -67,7 +56,7 @@
             <li class="active"><a href="/">DerrickPlayer</a></li>
             <li><a href="/shaka">ShakaPlayer</a></li>
             <li><a href="/video">VideoJs</a></li>
-            <li><a href="/ms">MS</a></li>
+            <!-- <li><a href="/ms">MS</a></li> -->
             <li><a href="/setting">Setting</a></li>
           </ul>
         </div>
@@ -80,18 +69,7 @@
            controls>
       Your browser does not support HTML5 video.
     </video>
-    
-      <div id="mydiv">
-      <span id="myspan"><br />This demo requires Internet Explorer 11</span>
-    </div>
-    <div id="videoInfo"></div>
-    <div>&nbsp;</div>
-    <div id="curInfo"> 
-     <ul>
-        <li>Index: <span id="curIndex"></span> of <span id="numIndexes"></span></li>
-        <li>Segment length: <span id="segLength"></span></li>
-        <li>Video time: <span id="curTime"></span></li>
-      </ul>
+ 
 
 
 

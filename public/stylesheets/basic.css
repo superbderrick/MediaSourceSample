@@ -1,0 +1,21 @@
+body {
+  padding-top: 50px;
+}
+
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.contentsList
+{
+	margin: 10px;
+	font-size: 20px;
+}
+
+#loadButton
+{
+	margin: 10px;
+	font-size: 20px;
+	color: blue;
+}
