@@ -1,38 +1,36 @@
-var player = require("/player");
 var app = function() {};
 
-app.testURL = null;
+app.testType = 'assets/frag_bunny.mp4';
+
+app.video = null;
 
 
 
-
-app.onContentChange = function ()  {
+app.onContentChange = function () 
+{
   var mpd = document.getElementById('contentsList').value;
   app.testType = mpd ;
-  
 }
 
-app.loadStream = function () {
-    player.init();
-}
-
-
-var player = function(video) 
+app.loadStream = function ()
 {
-  player.mediaSource = null;
-  player.sourceBuffer = null;
-  player.mimeCodec = null;
-  player.video = null;
+	console.log('check support mediaSource possibility');
+    if(app.checkSupportSource)
+    {
+      video = document.querySelector('video');	
+      console.log(video);	
+      var player = new Player(app.testType , video);
+	  player.init();
+    } else
+      console.error('Unsupported MIME type or codec: ', mimeCodec);
+}
 
-  player.segmentLength = 0;
-  player.segmentDuration = 0;
-    player.bytesFetched = 0;
-    player.requestedSegments = [];
-    player.totalSegments = 5;
-
-    player.init = function  () {
-        console.log('test');
-    }
-
+app.checkSupportSource = function ()
+{
+  var issupport = false;
+  if ('MediaSource' in window && MediaSource.isTypeSupported(mimeCodec)) {
+    issupport = true;
+  } else
+    issupport = false;
 }
 
