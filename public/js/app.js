@@ -1,26 +1,31 @@
 var app = function() {};
 
-app.testType = 'assets/frag_bunny.mp4';
 
+app.url = 'assets/frag_bunny.mp4';
+app.demoType = 0 ;
 app.video = null;
-
 
 
 app.onContentChange = function () 
 {
-  var mpd = document.getElementById('contentsList').value;
-  app.testType = mpd ;
+  var demoUrl = document.getElementById('contentsList').value;
+  var demoIndex = document.getElementById('contentsList').selectedIndex;
+
+  app.url = demoUrl ;
+  app.demoType = demoIndex ;
 }
 
 app.loadStream = function ()
 {
 	console.log('check support mediaSource possibility');
+
     if(app.checkSupportSource)
     {
       video = document.querySelector('video');	
-      console.log(video);	
-      var player = new Player(app.testType , video);
-	  player.init();
+      
+      var loader = new Loader(app.demoType , app.url, video );
+      loader.load();
+
     } else
       console.error('Unsupported MIME type or codec: ', mimeCodec);
 }
