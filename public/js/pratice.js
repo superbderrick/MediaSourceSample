@@ -57,22 +57,22 @@ pratice.showSampleCode = function () {
 
 // good sample to make instance 02
 
-function Fruit () {
+// function Fruit () {
 
-}
+// }
 
-Fruit.prototype.color = "Yellow";
-Fruit.prototype.sweetness = 7;
-Fruit.prototype.fruitName = "Generic Fruit";
-Fruit.prototype.nativeToLand = "USA";
+// Fruit.prototype.color = "Yellow";
+// Fruit.prototype.sweetness = 7;
+// Fruit.prototype.fruitName = "Generic Fruit";
+// Fruit.prototype.nativeToLand = "USA";
 
-Fruit.prototype.showName = function () {
-console.log("This is a " + this.fruitName);
-}
+// Fruit.prototype.showName = function () {
+// console.log("This is a " + this.fruitName);
+// }
 
-Fruit.prototype.nativeTo = function () {
-            console.log("Grown in:" + this.nativeToLand);
-}
+// Fruit.prototype.nativeTo = function () {
+//             console.log("Grown in:" + this.nativeToLand);
+// }
 
 pratice.showSampleCodeTwo = function () {
 	
