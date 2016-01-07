@@ -19,9 +19,9 @@ Player.createModules = function () {
 	 Player.mimeCodec = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
 }
 
-Player.prototype.start = function () {
+Player.start = function () {
+  
     Player.video.src = Player.url;  
-
     if(Player.video.paused) {
       Player.video.play();
     }
