@@ -1,10 +1,8 @@
 var app = function() {};
 
-
 app.url = 'assets/frag_bunny.mp4';
 app.demoType = 0 ;
 app.video = null;
-
 
 app.onContentChange = function () 
 {
@@ -17,12 +15,11 @@ app.onContentChange = function ()
 
 app.loadStream = function ()
 {
-	console.log('check support mediaSource possibility');
-
+    // check to suport mediasource 
     if(app.checkSupportSource)
     {
       video = document.querySelector('video');	
-      
+
       var loader = new Loader(app.demoType , app.url, video );
       loader.load();
 
