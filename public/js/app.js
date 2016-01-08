@@ -38,7 +38,9 @@ app.changedDemotypToString = function(index) {
                break;
   case 1 : demoType = 'MEDIASOURCE';
                break;
-  case 2 : demoType = 'MEDIASOURCE_DASH_SINGLE';
+  case 2 : demoType = 'MEDIASOURCE_SEGMENT';
+               break;             
+  case 3 : demoType = 'MEDIASOURCE_DASH_SINGLE';
                break;
   default :demoType = 'VIDEOTAG';
                break;               

@@ -9,9 +9,14 @@ var Loader = function(demotype ,url , video) {
 	 		player.init();
 		}
 		else if(demotype == 'MEDIASOURCE') {
+			BasePlayer.init(this.url ,this.video);
+			BasePlayer.start();
+		}
+		else if(demotype == 'MEDIASOURCE_SEGMENT') {
 			segmentPlayer.init(this.url ,this.video);
 			segmentPlayer.play();
 		}
+
 	};
 
 }
