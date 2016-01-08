@@ -16,7 +16,14 @@ var Loader = function(demotype ,url , video) {
 			segmentPlayer.init(this.url ,this.video);
 			segmentPlayer.play();
 		}
-
+		else if(demotype == 'MEDIASOURCE_DASH_SEGMENTLIST') {
+			//segmentPlayer.init(this.url ,this.video);
+			//segmentPlayer.play();
+		}
+		else if(demotype == 'MEDIASOURCE_DASH_SEGMENTTEMPLATE') {
+			//segmentPlayer.init(this.url ,this.video);
+			//segmentPlayer.play();
+		}
 	};
 
 }

@@ -40,11 +40,14 @@ app.changedDemotypToString = function(index) {
                break;
   case 2 : demoType = 'MEDIASOURCE_SEGMENT';
                break;             
-  case 3 : demoType = 'MEDIASOURCE_DASH_SINGLE';
+  case 3 : demoType = 'MEDIASOURCE_DASH_SEGMENTLIST';
                break;
-  default :demoType = 'VIDEOTAG';
+  case 4 : demoType = 'MEDIASOURCE_DASH_SEGMENTLIST';
+               break;
+  default: demoType = 'VIDEOTAG';
                break;               
   }
+
   return demoType;
 }
 
