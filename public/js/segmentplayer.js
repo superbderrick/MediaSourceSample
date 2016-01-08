@@ -14,7 +14,7 @@ segmentPlayer.requestedSegments = [];
 segmentPlayer.totalSegments = 5;
 
 
-segmentPlayer.init = function (url , video) {
+segmentPlayer.init = function(url , video) {
 	segmentPlayer.url = url;
   segmentPlayer.video = video;
 }
@@ -25,22 +25,25 @@ segmentPlayer.play = function () {
   segmentPlayer.setVideo();
 }
 
-segmentPlayer.createModule = function () {
+segmentPlayer.createModule = function() {
 	segmentPlayer.mimeCodec = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
  	segmentPlayer.mediaSource = new MediaSource;
 }
-segmentPlayer.initializeSegments = function () {
+
+segmentPlayer.initializeSegments = function() {
   for (var i = 0; i < segmentPlayer.totalSegments; ++i) {
     segmentPlayer.requestedSegments[i] = false;
   }	
 }
-segmentPlayer.setVideo = function () {
+
+segmentPlayer.setVideo = function() {
 	segmentPlayer.video.src = URL.createObjectURL(segmentPlayer.mediaSource);
  	segmentPlayer.mediaSource.addEventListener('sourceopen',segmentPlayer.sourceOpen);
 }
+
 segmentPlayer.sourceOpen = function() {
   segmentPlayer.sourceBuffer = segmentPlayer.mediaSource.addSourceBuffer(segmentPlayer.mimeCodec);
-  segmentPlayer.getFileLength(this.url,segmentPlayer.fetchFirstSegment);
+  segmentPlayer.getFileLength(segmentPlayer.url , segmentPlayer.fetchFirstSegment);
 }
 
 segmentPlayer.getFileLength = function(url, callback) {
@@ -53,55 +56,28 @@ segmentPlayer.getFileLength = function(url, callback) {
 }
 
 segmentPlayer.fetchFirstSegment = function(fileLength) {
-	console.log('goal');
-	    // this.segmentLength = Math.round(fileLength /this.totalSegments);    
-    	// this.fetchRange(this.url, 0, this.segmentLength, app.appendSegment);
-    	// requestedSegments[0] = true;
-    	// app.registerVideoEvent();
-
-	}
-
-
-
-
-segmentPlayer.getFileLength = function(url, callback)  {
-    var xhr = new XMLHttpRequest;
-    xhr.open('head', url);
-    xhr.onload = function () {
-      console.log('content whole duration' + xhr.getResponseHeader('content-length'));
-      callback(xhr.getResponseHeader('content-length'));
-      };
-    xhr.send();
-  };
-
-segmentPlayer.setfirstsegment = function(fileLength)
-{
-    console.log('fileLength : ' + fileLength);
-
-    console.log('about mb : ' + (fileLength / 1024 / 1024).toFixed(2), 'MB');
-
-
-    segmentLength = Math.round(fileLength / totalSegments);
-
-    console.log('each  segmentLength is  : ' + segmentLength);
-
-    app.fetchRange(assetURL, 0, segmentLength, app.appendSegment);
-
-    requestedSegments[0] = true;
-
-    app.registerVideoEvent();
+	console.log(fileLength);
+  segmentPlayer.segmentLength = Math.round(fileLength /segmentPlayer.totalSegments);    
+	segmentPlayer.fetchRange(segmentPlayer.url, 0, segmentPlayer.segmentLength, segmentPlayer.appendSegment);
+	segmentPlayer.requestedSegments[0] = true;
+	segmentPlayer.registerVideoEvents();
 }
 
-segmentPlayer.registerVideoEvent = function ()
-{
-    video.addEventListener('timeupdate', app.checkBuffer);  
-    video.addEventListener('canplay', app.canPlayEvent);  
-    video.addEventListener('seeking', app.seek);  
+segmentPlayer.registerVideoEvents = function() {
+  segmentPlayer.video.addEventListener('timeupdate', segmentPlayer.checkBuffer);  
+  segmentPlayer.video.addEventListener('canplay', segmentPlayer.canPlayEvent);  
+  //segmentPlayer.video.addEventListener('seeking', segmentPlayer.seek);  
 }
 
-segmentPlayer.seek = function (event)
-{
-   
+segmentPlayer.getCurrentSegment = function() {
+  return ((segmentPlayer.video.currentTime / segmentPlayer.segmentDuration) | 0) + 1;
+};
+
+segmentPlayer.appendSegment = function (chunk) {
+  segmentPlayer.sourceBuffer.appendBuffer(chunk);
+};
+
+segmentPlayer.seek = function (event) {
   if (mediaSource.readyState === 'open') {
     sourceBuffer.abort();
     console.log(mediaSource.readyState);
@@ -111,147 +87,72 @@ segmentPlayer.seek = function (event)
   }
 }
 
-   
-segmentPlayer.canPlayEvent = function ()
-{
-  console.log('canPlayEvent ');
-  console.log('video duration ' + video.duration);
-  console.log('totalSegments ' + totalSegments);
+segmentPlayer.canPlayEvent = function() {
+	console.log('canPlayEvent ');
+	console.log('video duration ' + segmentPlayer.video.duration);
+	console.log('totalSegments ' + segmentPlayer.totalSegments);
 
-   segmentDuration = video.duration / totalSegments;
+	 segmentPlayer.segmentDuration = segmentPlayer.video.duration / segmentPlayer.totalSegments;
 
-   console.log('segmentDuration ' +segmentDuration);
-   video.play();
+	 console.log('segmentDuration ' +segmentPlayer.segmentDuration);
+	 segmentPlayer.video.play();
 }
 
-segmentPlayer.fetchRange =  function  (url, start, end, callback) 
-{
-    console.log('called fetchRange ');
+segmentPlayer.fetchRange = function(url, start, end, callback) {
+  var xhr = new XMLHttpRequest;
+  xhr.open('get', url);
+  xhr.responseType = 'arraybuffer';
+  xhr.setRequestHeader('Range', 'bytes=' + start + '-' + end);
 
-    var xhr = new XMLHttpRequest;
-
-    xhr.open('get', url);
-    xhr.responseType = 'arraybuffer';
-
-    xhr.setRequestHeader('Range', 'bytes=' + start + '-' + end);
-
-    xhr.onload = function () {
-      bytesFetched += end - start + 1;
-      console.log('byetesFetched : ' + bytesFetched);
-      console.log('check response ' + xhr.response);
-      callback(xhr.response);
-    };
-    xhr.send();
+  xhr.onload = function () {
+    segmentPlayer.bytesFetched += end - start + 1;
+    callback(xhr.response);
+  };
+  xhr.send();
 };
 
-  segmentPlayer.checkBuffer = function  () {
-    var currentSegment = app.getCurrentSegment();
-    
-    console.log('app.shouldFetchNextSegment(currentSegment)'+ app.shouldFetchNextSegment(currentSegment));
-    if (currentSegment === totalSegments && app.haveAllSegments()) {
-      console.log('last segment', mediaSource.readyState);
-      mediaSource.endOfStream();
-      video.removeEventListener('timeupdate', app.checkBuffer);
-    } 
-    else if (app.shouldFetchNextSegment(currentSegment)) {
-      requestedSegments[currentSegment] = true;
-      console.log('time to fetch next chunk', video.currentTime);
-      //bytesfetch는 기준이 된다. 
-      app.fetchRange(assetURL, bytesFetched, bytesFetched + segmentLength, app.appendSegment);
-    }
-    
-  };
+segmentPlayer.checkBuffer = function() {
+	var currentSegment = segmentPlayer.getCurrentSegment();
+	console.log('app.shouldFetchNextSegment(currentSegment)'+ segmentPlayer.shouldFetchNextSegment(currentSegment));
 
-  segmentPlayer.getCurrentSegment = function()
-   {
-        console.log(' getCurrentSegment video.currentTime' + video.currentTime);
+	if(currentSegment === segmentPlayer.totalSegments && segmentPlayer.haveAllSegments()) {
+	  segmentPlayer.mediaSource.endOfStream();
+	  segmentPlayer.video.removeEventListener('timeupdate', app.checkBuffer);
+	} 
+	else if (segmentPlayer.shouldFetchNextSegment(currentSegment)) {
+	  segmentPlayer.requestedSegments[currentSegment] = true;
+	  console.log('time to fetch next chunk', segmentPlayer.video.currentTime);
+	  //bytesfetch는 기준이 된다. 
+	  segmentPlayer.fetchRange(assetURL, segmentPlayer.bytesFetched, segmentPlayer.bytesFetched + segmentPlayer.segmentLength, segmentPlayer.appendSegment);
+	}
+  
+};
 
-        console.log(' getCurrentSegment segmentDuration' + segmentDuration);
+segmentPlayer.getCurrentSegment = function() {
+  console.log(' getCurrentSegment video.currentTime' + segmentPlayer.video.currentTime);
 
-        console.log(' getCurrentSegment final value ' + (video.currentTime / segmentDuration));
-        return ((video.currentTime / segmentDuration) | 0) + 1;
-   };
-  segmentPlayer.haveAllSegments = function ()
-  {
-      return requestedSegments.every(function (val)
-       { return !!val; });
-   };
+  console.log(' getCurrentSegment segmentDuration' + segmentPlayer.segmentDuration);
 
+  console.log(' getCurrentSegment final value ' + (segmentPlayer.video.currentTime / segmentPlayer.segmentDuration));
+  return ((segmentPlayer.video.currentTime / segmentPlayer.segmentDuration) | 0) + 1;
+};
 
-  segmentPlayer.shouldFetchNextSegment = function(currentSegment) {
-    // whole duration  calculate 80% bufferring
-    return video.currentTime > segmentDuration * currentSegment * 0.8 &&
-      !requestedSegments[currentSegment];
-  };
+segmentPlayer.haveAllSegments = function() {
+  return segmentPlayer.requestedSegments.every(function (val)
+   { return !!val; });
+};
 
+segmentPlayer.shouldFetchNextSegment = function(currentSegment) {
+	return segmentPlayer.video.currentTime > segmentPlayer.segmentDuration * currentSegment * 0.8 &&
+	  !segmentPlayer.requestedSegments[currentSegment];
+};
 
-
-segmentPlayer.checkSupportSource = function ()
-{
-  var issupport = false;
-  if ('MediaSource' in window && MediaSource.isTypeSupported(mimeCodec)) {
-    issupport = true;
-  } else
-    issupport = false;
-} 
-
- segmentPlayer.appendSegment = function (chunk) 
- {
-   console.log('appendSegment');
-   sourceBuffer.appendBuffer(chunk);
- };
+segmentPlayer.appendSegment = function(chunk) {
+  segmentPlayer.sourceBuffer.appendBuffer(chunk);
+};
 
 
-segmentPlayer.typeB = function ()
-{
-    console.log('check support mediaSource possibility');
-    if(app.checkSupportSource)
-    {
-      app.init(); 
-    } else
-      console.error('Unsupported MIME type or codec: ', mimeCodec);
-}
 
-
-segmentPlayer.parsempd = function ()
-{
-  app.getData(mpdURL);
-}
-
-segmentPlayer.getData = function (url) {
-  if (url !== "") {
-    var xhr = new XMLHttpRequest(); // Set up xhr request
-    xhr.open("GET", url, true); // Open the request          
-    xhr.responseType = "text"; // Set the type of response expected
-    xhr.send();
-
-    //  Asynchronously wait for the data to return
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState == xhr.DONE) {
-        var tempoutput = xhr.response;
-        var parser = new DOMParser(); //  Create a parser object 
-
-        // Create an xml document from the .mpd file for searching
-        var xmlData = parser.parseFromString(tempoutput, "text/xml", 0);
-        console.log("parsing mpd file");
-        console.log(xmlData);
-
-        // Get and display the parameters of the .mpd file
-        app.getFileType(xmlData);
-
-        // Set up video object, buffers, etc  
-        app.setupVideo();
-
-        // Initialize a few variables on reload
-       // clearVars();
-      }
-    }
-    // Report errors if they happen during xhr
-    xhr.addEventListener("error", function (e) {
-      log("Error: " + e + " Could not load url.");
-    }, false);
-  }
-}
 
 
 
