@@ -4,15 +4,18 @@ var Loader = function (demotype ,url , video) {
 	this.demoType = demotype;
 
 	this.load = function () {
+		// console.log(module.publicMethod()); // 1
+		// if(demotype == 0) {
+		// 	var player = new Player(this.url ,this.video);
+	 // 		player.init();
+		// }
+		 if(demotype == 0) {
+			segmentPlayer.init(this.url ,this.video);
+			segmentPlayer.play();
+		}
 
-		if(demotype == 0) {
-			var player = new Player(this.url ,this.video);
-	 		player.init();
-		}
-		else if(demotype == 1) {
-			var segmentPlayer = new SegmentPlayer(this.url,this.video); 
-			segmentPlayer.init();
-		}
+		
+
 	};
 
 }
