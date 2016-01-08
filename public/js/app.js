@@ -1,4 +1,4 @@
-var app = function() {};
+var app = function(){};
 
 app.url = 'assets/frag_bunny.mp4';
 app.demoType = null;
@@ -13,8 +13,7 @@ app.onContentChange = function() {
 }
 
 app.loadStream = function() {
-  if(app.checkSupportSource)
-  {
+  if(app.checkSupportSource) {
     video = document.querySelector('video');	
 
     var loader = new Loader(app.changedDemotypToString(app.demoIndex), app.url, video);

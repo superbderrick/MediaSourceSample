@@ -13,10 +13,11 @@ Player.prototype.init = function () {
 
 
 Player.start = function () {
-    Player.video.src = Player.url;  
-    if(Player.video.paused) {
-      	Player.video.play();
-    }
+	Player.video.src = Player.url;  
+	
+	if(Player.video.paused) {
+	  	Player.video.play();
+	}
 }
 
 
