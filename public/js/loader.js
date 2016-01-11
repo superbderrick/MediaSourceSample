@@ -3,29 +3,22 @@ var Loader = function(demotype, url, video) {
     this.video = video;
 
     this.load = function() {
-        demotype = 'MEDIASOURCE_DASH_SEGMENTLIST';
-        this.url = 'assets/sample_dash.mpd'
-        dashPlayer.init(this.url, this.video);
-        dashPlayer.play();
-
-        // if (demotype == 'VIDEOTAG') {
-        //     var player = new Player(this.url, this.video);
-        //     player.init();
-        // } else if (demotype == 'MEDIASOURCE') {
-        //     BasePlayer.init(this.url, this.video);
-        //     BasePlayer.start();
-        // } else if (demotype == 'MEDIASOURCE_SEGMENT') {
-        //     segmentPlayer.init(this.url, this.video);
-        //     segmentPlayer.play();
-        // } else if (demotype == 'MEDIASOURCE_DASH_SEGMENTLIST') {
-        //     dashPlayer.init(this.url, this.video);
-        //     dashPlayer.play();
-        //     //segmentPlayer.init(this.url ,this.video);
-        //     //segmentPlayer.play();
-        // } else if (demotype == 'MEDIASOURCE_DASH_SEGMENTTEMPLATE') {
-        //     //segmentPlayer.init(this.url ,this.video);
-        //     //segmentPlayer.play();
-        // }
+        if (demotype == 'VIDEOTAG') {
+            var player = new Player(this.url, this.video);
+            player.init();
+        } else if (demotype == 'MEDIASOURCE') {
+            BasePlayer.init(this.url, this.video);
+            BasePlayer.start();
+        } else if (demotype == 'MEDIASOURCE_SEGMENT') {
+            segmentPlayer.init(this.url, this.video);
+            segmentPlayer.play();
+        } else if (demotype == 'MEDIASOURCE_DASH_SEGMENTLIST') {
+            dashPlayer.init(this.url, this.video);
+            dashPlayer.play();
+        } else if (demotype == 'MEDIASOURCE_DASH_SEGMENTTEMPLATE') {
+            //segmentPlayer.init(this.url ,this.video);
+            //segmentPlayer.play();
+        }
     };
 
 }
