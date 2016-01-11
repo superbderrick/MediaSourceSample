@@ -13,20 +13,23 @@ BasePlayer.init = function(url, video) {
 
 BasePlayer.start = function() {
  if ('MediaSource' in window && MediaSource.isTypeSupported(BasePlayer.mimeCodec)) {
-      BasePlayer.mediaSource = new MediaSource;
 
-      console.log(BasePlayer.mediaSource.readyState); // closed
+      BasePlayer.mediaSource = new MediaSource; // step 1 create Mediasource Object. 
 
-      BasePlayer.video.src = URL.createObjectURL(BasePlayer.mediaSource); //
-
-      BasePlayer.mediaSource.addEventListener('sourceopen', BasePlayer.sourceOpen); //  
+      BasePlayer.video.src = URL.createObjectURL(BasePlayer.mediaSource); // step 2 Attach it to a video element and Creates URLs for MediaSource objects. 
+      
+      BasePlayer.mediaSource.addEventListener('sourceopen', BasePlayer.sourceOpen); // step3 Register source openevent. 
     } else {
       console.error('Unsupported MIME type or codec: ', BasePlayer.mimeCodec);
     }	
 }
 
+/**
+ * [sourceOpen ]
+ * @return {[type]} [description]
+ */
 BasePlayer.sourceOpen = function() {
-	BasePlayer.sourceBuffer = BasePlayer.mediaSource.addSourceBuffer(BasePlayer.mimeCodec);	
+	BasePlayer.sourceBuffer = BasePlayer.mediaSource.addSourceBuffer(BasePlayer.mimeCodec);	// step4 
 	BasePlayer.fetchSegment(BasePlayer.url , BasePlayer.updateEnd);
 }
 
