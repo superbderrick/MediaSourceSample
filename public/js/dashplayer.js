@@ -10,7 +10,7 @@ dashPlayer.xmlData = null;
 
 // contents Information.
 dashPlayer.file = null;  // MP4 file
-dashPlayer.mimetype = null;  // Type of file
+dashPlayer.mimeType = null;  // Type of file
 dashPlayer.codecs = null; //  Codecs allowed
 dashPlayer.width = null;  //  native width and height
 dashPlayer.height = null;
@@ -26,6 +26,9 @@ dashPlayer.segmentDuration = null;
 dashPlayer.segCheck;
 dashPlayer.lastTime = 0;
 dashPlayer.bufferUpdated = false;
+dashPlayer.Index = 0;
+dashPlayer.segLength = 0;
+
 
 
 
@@ -96,29 +99,15 @@ dashPlayer.getFileType = function( data) {
 }
 
 dashPlayer.sourceOpen = function() {
-    // It has two types of alogorism about buffering.
-    // first mstype It need to prameter first is Initialization file and url.
-    // 
-    console.log(dashPlayer.mediaSource);
-    console.log(dashPlayer.mimeType);
-    console.log(dashPlayer.codecs);
-
-		var test = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
-		//video/mp4;avc1.4d0020,mp4a.40.2
-		
-		var test1 = dashPlayer.mimeType + ";" + dashPlayer.codecs
-		console.log(test);
-		console.log(test1);
-
-		var test3 ='video/mp4; codecs="avc1.4d0020,mp4a.40.2"';
-    // dashPlayer.sourceBuffer = dashPlayer.mediaSource.addSourceBuffer(dashPlayer.mimeType + ";" + dashPlayer.codecs);
-    dashPlayer.sourceBuffer = dashPlayer.mediaSource.addSourceBuffer(test3);
+    //temp value
+		var tempUrl ='video/mp4; codecs="avc1.4d0020,mp4a.40.2"';
+    dashPlayer.sourceBuffer = dashPlayer.mediaSource.addSourceBuffer(tempUrl);
     dashPlayer.fetchinitializationSegment(dashPlayer.Initialization ,dashPlayer.file);
 
 }
 dashPlayer.fetchinitializationSegment = function(range, url) {
       var xhr = new XMLHttpRequest();
-      if (range || url) { // make sure we've got incoming params
+      if (range || url) { 
 
         //  set the desired range of bytes we want from the mp4 video file
         xhr.open('GET', url);
@@ -155,14 +144,18 @@ dashPlayer.timeToDownload = function(range) {
 }
 
 dashPlayer.updateFunct = function() {
-			dashPlayer.bufferUpdated = true;
-    dashPlayer.getStarted(dashPlayer.file);
+	dashPlayer.bufferUpdated = true;
+  dashPlayer.getStarted(dashPlayer.file);
+  dashPlayer.sourceBuffer.removeEventListener("update", dashPlayer.updateFunct);
 
     // videoSource.removeEventListener("update", updateFunct);
 }
 
 dashPlayer.getStarted = function(url) {
-		
+  dashPlayer.playSegment(dashPlayer.segments[dashPlayer.Index].getAttribute("mediaRange").toString(), url);
+	dashPlayer.Index++;	
+  dashPlayer.video.addEventListener("timeupdate", dashPlayer.fileChecks, false);
+
 }
 
 dashPlayer.playSegment = function(range , url) {
@@ -176,13 +169,16 @@ dashPlayer.playSegment = function(range , url) {
           xhr.addEventListener("readystatechange", function () {
             if (xhr.readyState == xhr.DONE) { //wait for video to load
               //  Calculate when to get next segment based on time of current one
-                segCheck = (timeToDownload(range) * .8).toFixed(3); // use .8 as fudge factor
-                segLength.textContent = segCheck;
+              //  // dashPlayer.segCheck = (dashPlayer.timeToDownload(range) * .8).toFixed(3); // use .8 as fudge factor        
+                dashPlayer.segCheck = (dashPlayer.timeToDownload(range) * .8).toFixed(3); // use .8 as fudge factor
+                dashPlayer.segLength.textContent = dashPlayer.segCheck;
               // Add received content to the buffer
               try {
-                videoSource.appendBuffer(new Uint8Array(xhr.response));
+                console.log(dashPlayer.sourceBuffer);
+                console.log(new Uint8Array(xhr.response));
+                dashPlayer.sourceBuffer.appendBuffer(new Uint8Array(xhr.response));
               } catch (e) {
-                log('Exception while appending', e);
+                console.log('Exception while appending', e);
               }
             }
           }, false);
@@ -192,6 +188,23 @@ dashPlayer.playSegment = function(range , url) {
         }
       }
 
+}
+
+dashPlayer.fileChecks = function() {
+// If we're ok on the buffer, then continue
+  if (dashPlayer.bufferUpdated == true) {
+    if (dashPlayer.Index < dashPlayer.segments.length) {
+      //  loads next segment when time is close to the end of the last loaded segment 
+      if ((dashPlayer.video.currentTime - dashPlayer.lastTime) >= dashPlayer.segCheck) {
+        dashPlayer.playSegment(dashPlayer.segments[dashPlayer.Index].getAttribute("mediaRange").toString(), dashPlayer.file);
+        dashPlayer.lastTime = dashPlayer.video.currentTime;
+        
+        index++;
+      }
+    } else {
+      dashPlayer.video.removeEventListener("timeupdate", dashPlayer.fileChecks, false);
+    }
+  }
 }
 }
 

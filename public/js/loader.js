@@ -4,7 +4,7 @@ var Loader = function(demotype, url, video) {
 
     this.load = function() {
         demotype = 'MEDIASOURCE_DASH_SEGMENTLIST';
-        this.url = 'assets/simpledash.xml'
+        this.url = 'assets/sample_dash.mpd'
         dashPlayer.init(this.url, this.video);
         dashPlayer.play();
 
