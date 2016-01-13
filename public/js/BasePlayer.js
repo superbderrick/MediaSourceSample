@@ -32,13 +32,22 @@ BasePlayer.sourceOpen = function() {
 
 BasePlayer.fetchSegment = function(url , callback) {
 	var xhr = new XMLHttpRequest;
-    xhr.open('get', url);
+    xhr.open('GET', url , true); //request type url async type
     xhr.responseType = 'arraybuffer';
-    xhr.onload = function () {
-      // The fetch succeeded.
-      callback(xhr.response);
-    };
     xhr.send();
+
+    //0 (uninitialized) – xmlHttpRequest 객체 생성 완료
+    // (loading) – connection open status.
+    // (loaded) – data send complete
+    // (interactive) – comunication with server
+    // (complete) – coplete
+    xhr.onreadystatechange = function () {
+      if(xhr.readyState == xhr.DONE) {
+        callback(xhr.response);
+      }
+
+    }
+    
 }
 
 BasePlayer.updateEnd = function(chunk) {

@@ -1,6 +1,6 @@
 var dashPlayer = {};
 
-// url mpd fiee file mp4
+// url mpd  file mp4
 dashPlayer.url = null;
 dashPlayer.mediaSource = null;
 dashPlayer.sourceBuffer = null;
@@ -29,15 +29,13 @@ dashPlayer.bufferUpdated = false;
 dashPlayer.Index = 0;
 
 
-
 dashPlayer.init = function(url, video) {
     dashPlayer.url = url;
     dashPlayer.video = video;
 }
 
 dashPlayer.play = function() {
-		dashPlayer.parseMPD();
-    
+		dashPlayer.parseMPD();    // Parse Start ! 
 }
 
 dashPlayer.setVideo = function() {
@@ -47,7 +45,7 @@ dashPlayer.setVideo = function() {
 }
 
 dashPlayer.parseMPD = function() {
-	dashPlayer.getData(dashPlayer.url);
+	dashPlayer.getData(dashPlayer.url); // Parse MPD data from server .
 }
 
 

@@ -49,9 +49,12 @@ segmentPlayer.sourceOpen = function() {
 segmentPlayer.getFileLength = function(url, callback) {
   var xhr = new XMLHttpRequest;
   xhr.open('head', url);
-  xhr.onload = function () {
-    callback(xhr.getResponseHeader('content-length'));
+  xhr.onreadystatechange = function () {
+    if(xhr.readyState == xhr.DONE) {
+      callback(xhr.getResponseHeader('content-length'));
+    }
   };
+  
   xhr.send();
 }
 
@@ -105,10 +108,12 @@ segmentPlayer.fetchRange = function(url, start, end, callback) {
   xhr.responseType = 'arraybuffer';
   xhr.setRequestHeader('Range', 'bytes=' + start + '-' + end);
 
-  xhr.onload = function () {
-    segmentPlayer.bytesFetched += end - start + 1;
-    callback(xhr.response);
-  };
+  xhr.onreadystatechange = function () {
+    if(xhr.readyState == xhr.DONE) {
+        segmentPlayer.bytesFetched += end - start + 1;
+        callback(xhr.response);
+    }
+  }
   xhr.send();
 };
 
