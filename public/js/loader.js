@@ -1,7 +1,8 @@
 var Loader = function(demotype, url, video) {
     this.url = url;
     this.video = video;
-
+    console.log(url);
+    
     this.load = function() {
         if (demotype == 'VIDEOTAG') {
             var player = new Player(this.url, this.video);

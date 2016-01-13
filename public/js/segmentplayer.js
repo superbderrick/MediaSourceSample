@@ -69,7 +69,6 @@ segmentPlayer.fetchFirstSegment = function(fileLength) {
 segmentPlayer.registerVideoEvents = function() {
   segmentPlayer.video.addEventListener('timeupdate', segmentPlayer.checkBuffer);  
   segmentPlayer.video.addEventListener('canplay', segmentPlayer.canPlayEvent);  
-  //segmentPlayer.video.addEventListener('seeking', segmentPlayer.seek);  
 }
 
 segmentPlayer.getCurrentSegment = function() {
