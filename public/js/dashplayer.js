@@ -30,7 +30,7 @@ dashPlayer.Index = 0;
 
 
 dashPlayer.init = function(url, video) {
-  console.log(dashPlayer.url );
+  console.log(url);
   dashPlayer.url = url;
   dashPlayer.video = video;
 }
@@ -81,7 +81,9 @@ dashPlayer.getFileType = function( data) {
   dashPlayer.bandwidth = dashPlayer.Representation[0].getAttribute("bandwidth");	
 	dashPlayer.Initialization = ini[0].getAttribute("range");
 	dashPlayer.segments = data.querySelectorAll("SegmentURL");
+
   dashPlayer.segmentDuration = segList[0].getAttribute("duration");
+  console.log("num + " + dashPlayer.segments.length);
 	}
 	catch (error) {
 		console.log(error);
@@ -97,6 +99,8 @@ dashPlayer.fetchinitializationSegment = function(range, url) {
       var xhr = new XMLHttpRequest();
       if (range || url) { 
         xhr.open('GET', url);
+        // segCheck = (timeToDownload(range) * .8).toFixed(3); // use .8 as fudge factor
+        dashPlayer.segCheck = (dashPlayer.timeToDownload(range) * 0.8).toFixed(3);
         xhr.setRequestHeader("Range", "bytes=" + range);
         xhr.send();
         xhr.responseType = 'arraybuffer';
@@ -135,6 +139,7 @@ dashPlayer.getStarted = function(url) {
 
 
 dashPlayer.playSegment = function(range , url) {	
+     console.log('range' + range);
 	   var xhr = new XMLHttpRequest();
       if (range || url) { // make sure we've got incoming params
         xhr.open('GET', url);
@@ -145,9 +150,11 @@ dashPlayer.playSegment = function(range , url) {
           xhr.addEventListener("readystatechange", function () {
             if (xhr.readyState == xhr.DONE) {
               try {
+
+                console.log('play gogo' + range);
+                dashPlayer.segCheck = (dashPlayer.timeToDownload(range) * 0.8).toFixed(3);
                 dashPlayer.sourceBuffer.appendBuffer(new Uint8Array(xhr.response));
                 dashPlayer.video.play();
-                dashPlayer.video.addEventListener('error' , dashPlayer.test);
               } catch (e) {
                 console.log('Exception while appending', e);
               }
@@ -163,14 +170,31 @@ dashPlayer.playSegment = function(range , url) {
 }
 
 dashPlayer.checkBuffer = function() {
-  var currentSegment = dashPlayer.getCurrentSegment();
-  console.log(dashPlayer.segments[dashPlayer.Index].getAttribute("mediaRange").toString());
-  console.log(dashPlayer.video.currentTime);
+  console.log('dashPlayer.checkBuffer is called ' + dashPlayer.bufferUpdated);
+  if (dashPlayer.bufferUpdated == true) {
+     if (dashPlayer.Index < dashPlayer.segments.length) {
+       if ((dashPlayer.video.currentTime - dashPlayer.lastTime) >= dashPlayer.segCheck) {
+          console.log('needto new fetch');
+          dashPlayer.Index++;
+          dashPlayer.lastTime = dashPlayer.video.currentTime;
+          dashPlayer.playSegment(dashPlayer.segments[dashPlayer.Index].getAttribute("mediaRange").toString(), dashPlayer.file);
+       } else {
+          dashPlayer.video.removeEventListener("timeupdate", dashPlayer.checkBuffer, false);
+       }
+
+     }
+
+  }
+
 };
 
-dashPlayer.getCurrentSegment = function() {
-  //dashPlayer.playSegment(dashPlayer.segments[dashPlayer.Index].getAttribute("mediaRange").toString(), url);
-   //return ((dashPlayer.video.currentTime / dashPlayer.segmentDuration) | 0) + 1;
+
+
+ dashPlayer.timeToDownload = function(range) {
+  var vidDur = range.split("-");
+  // Time = size * 8 / bitrate
+  console.log(vidDur);
+  return (((vidDur[1] - vidDur[0]) * 8) / dashPlayer.bandwidth)
 }
 
 
