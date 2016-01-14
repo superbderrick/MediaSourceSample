@@ -56,7 +56,7 @@ BasePlayer.updateEnd = function(chunk) {
 }
 
 BasePlayer.play = function() {
-  BasePlayer.mediaSource.endOfStream();
+  BasePlayer.mediaSource.endOfStream(); // Signals the end of the stream.
   video.play();
 }
 

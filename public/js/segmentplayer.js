@@ -61,7 +61,7 @@ segmentPlayer.getFileLength = function(url, callback) {
 segmentPlayer.fetchFirstSegment = function(fileLength) {
 	console.log(fileLength);
   segmentPlayer.segmentLength = Math.round(fileLength /segmentPlayer.totalSegments);    
-	segmentPlayer.fetchRange(segmentPlayer.url, 0, segmentPlayer.segmentLength, segmentPlayer.appendSegment);
+	segmentPlayer.fetchSegment(segmentPlayer.url, 0, segmentPlayer.segmentLength, segmentPlayer.appendSegment);
 	segmentPlayer.requestedSegments[0] = true;
 	segmentPlayer.registerVideoEvents();
 }
@@ -100,8 +100,8 @@ segmentPlayer.canPlayEvent = function() {
 	 segmentPlayer.video.play();
 }
 
-segmentPlayer.fetchRange = function(url, start, end, callback) {
-	console.log('fetchRange is called ');
+segmentPlayer.fetchSegment = function(url, start, end, callback) {
+	console.log('fetchSegment is called ');
   var xhr = new XMLHttpRequest;
   xhr.open('get', url);
   xhr.responseType = 'arraybuffer';
@@ -128,7 +128,7 @@ segmentPlayer.checkBuffer = function() {
 	  segmentPlayer.requestedSegments[currentSegment] = true;
 	  console.log('time to fetch next chunk', segmentPlayer.video.currentTime);
 	  //bytesfetch는 기준이 된다. 
-	  segmentPlayer.fetchRange(segmentPlayer.url, segmentPlayer.bytesFetched, segmentPlayer.bytesFetched + segmentPlayer.segmentLength, segmentPlayer.appendSegment);
+	  segmentPlayer.fetchSegment(segmentPlayer.url, segmentPlayer.bytesFetched, segmentPlayer.bytesFetched + segmentPlayer.segmentLength, segmentPlayer.appendSegment);
 	}
   
 };
@@ -148,6 +148,8 @@ segmentPlayer.haveAllSegments = function() {
 };
 
 segmentPlayer.shouldFetchNextSegment = function(currentSegment) {
+  console.log('shouldFetchNextSegment current video time  ' + segmentPlayer.video.currentTime);
+  console.log('standard ' + segmentPlayer.segmentDuration * currentSegment * 0.8);
 	return segmentPlayer.video.currentTime > segmentPlayer.segmentDuration * currentSegment * 0.8 &&
 	  !segmentPlayer.requestedSegments[currentSegment];
 };
